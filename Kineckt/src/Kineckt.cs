@@ -21,6 +21,7 @@ namespace Kineckt {
         private Effect _diffuse;
         private RenderTarget2D _mainBuffer;
         private DepthStencilState _depth;
+        private Model _plane;
 
         private float AspectRatio => _graphics.PreferredBackBufferWidth / (float) _graphics.PreferredBackBufferHeight;
 
@@ -55,8 +56,9 @@ namespace Kineckt {
 
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _model = Content.Load<Model>("models/cube");
-            _texture = Content.Load<Texture2D>("images/krakula-xl");
+            _model = Content.Load<Model>("models/starshipOmega");
+            _plane = Content.Load<Model>("models/plane");
+            _texture = Content.Load<Texture2D>("images/starshipOmegaPaintOver");
             _shadowMapGenerate = Content.Load<Effect>("shaders/ShadowMapsGenerate");
             _diffuse = Content.Load<Effect>("shaders/Diffuse");
         }
@@ -75,7 +77,7 @@ namespace Kineckt {
 
         protected override void Draw(GameTime gameTime) {
             var rotation = Matrix.CreateRotationY((float) gameTime.TotalGameTime.TotalSeconds);
-            var cameraPosition = Vector3.Transform(Vector3.Backward * 4, rotation);
+            var cameraPosition = Vector3.Transform(Vector3.Backward * 8, rotation);
 
             var cameraLookAtVector = Vector3.Zero;
             var cameraUpVector = Vector3.Up;
@@ -101,7 +103,7 @@ namespace Kineckt {
             GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
             GraphicsDevice.Clear(Color.Red);
             GraphicsDevice.DepthStencilState = _depth;
-            DrawShadowMap(_model, Matrix.Identity, lightViewProjection);
+            DrawShadowMap(_model, lightViewProjection);
 
             GraphicsDevice.SetRenderTarget(_mainBuffer);
             GraphicsDevice.Clear(Color.Aqua);
@@ -109,7 +111,7 @@ namespace Kineckt {
 
             foreach (var mesh in _model.Meshes) {
                 foreach (var meshPart in mesh.MeshParts) {
-                    Matrix modelMatrix = mesh.ParentBone.Transform;
+                    var modelMatrix = mesh.ParentBone.Transform;
 
                     _diffuse.Parameters["World"].SetValue(modelMatrix);
                     _diffuse.Parameters["View"].SetValue(viewMatrix);
@@ -142,13 +144,39 @@ namespace Kineckt {
             _spriteBatch.End();
         }
 
-        private void DrawShadowMap(Model model, Matrix modelWorldMatrix, Matrix lightViewProjection) {
+        private void DrawMesh(Camera camera, Sun sun) {
+            foreach (var mesh in _model.Meshes) {
+                foreach (var meshPart in mesh.MeshParts) {
+                    Matrix modelMatrix = mesh.ParentBone.Transform;
+
+                    _diffuse.Parameters["World"].SetValue(modelMatrix);
+                    _diffuse.Parameters["View"].SetValue(camera.GetViewMatrix());
+                    _diffuse.Parameters["Projection"].SetValue(camera.GetProjectionMatrix());
+
+                    _diffuse.Parameters["Alberto"].SetValue(_texture);
+                    _diffuse.Parameters["Shadow"].SetValue(_shadowMapRenderTarget);
+                    _diffuse.Parameters["ShadowProjection"].SetValue(modelMatrix * sun.GetLightViewProjection());
+                    _diffuse.CurrentTechnique.Passes[0].Apply();
+
+                    GraphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
+                    GraphicsDevice.Indices = meshPart.IndexBuffer;
+                    var primitiveCount = meshPart.PrimitiveCount;
+                    var vertexOffset = meshPart.VertexOffset;
+                    var startIndex = meshPart.StartIndex;
+
+                    GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, vertexOffset, startIndex,
+                        primitiveCount);
+                }
+            }
+        }
+
+        private void DrawShadowMap(Model model, Matrix lightViewProjection) {
             foreach (var mesh in model.Meshes) {
                 foreach (var meshPart in mesh.MeshParts) {
                     Matrix modelMatrix = mesh.ParentBone.Transform;
 
                     _shadowMapGenerate.Parameters["LightViewProj"]
-                        .SetValue(modelMatrix * modelWorldMatrix * lightViewProjection);
+                        .SetValue(modelMatrix * lightViewProjection);
 
                     _shadowMapGenerate.CurrentTechnique.Passes[0].Apply();
 

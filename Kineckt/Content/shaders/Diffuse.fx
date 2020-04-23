@@ -34,12 +34,10 @@ float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
 {
     float4 color = tex2D(Alberto, input.UV);
     
-    float4 p = input.ShadowPosition;
-    p /= p.w;
-    p = p * .5 ;
-    p += .5; 
-    p.y *= -1;
-    float shadowDepth = tex2D(Shadow, p.xy).r;
+    float4 shadowUV = input.ShadowPosition;
+    shadowUV /= shadowUV.w;
+    shadowUV = (shadowUV * .5 +.5) * float4(1,-1, 1, 1);
+    float shadowDepth = tex2D(Shadow, shadowUV.xy).r;
     float depth = input.ShadowPosition.z / input.ShadowPosition.w;
     float shadow = smoothstep(.002, .00001, depth - shadowDepth);
     color.rgb = lerp(color.rgb * shadow, color.rgb, .6);
