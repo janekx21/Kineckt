@@ -46,6 +46,8 @@
     <Compile Include="src\Camera.cs" />
     <Compile Include="src\GameObject.cs" />
     <Compile Include="src\Kineckt.cs" />
+    <Compile Include="src\ModelRenderer.cs" />
+    <Compile Include="src\Scene.cs" />
     <Compile Include="src\Sun.cs" />
   </ItemGroup>
   <ItemGroup>

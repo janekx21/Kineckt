@@ -2,6 +2,9 @@ using Microsoft.Xna.Framework;
 
 namespace Kineckt {
     public class Sun : GameObject {
+        public Sun() : base("Sun") {
+        }
+
         public Matrix GetLightViewProjection() {
             Matrix lightView = Matrix.CreateLookAt(Position,
                 Vector3.Zero,

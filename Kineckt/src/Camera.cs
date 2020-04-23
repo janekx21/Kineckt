@@ -14,7 +14,7 @@ namespace Kineckt {
         
         private float AspectRatio => _graphicsDevice.Viewport.Width / (float) _graphicsDevice.Viewport.Height;
 
-        public Camera(GraphicsDevice graphicsDevice) {
+        public Camera(GraphicsDevice graphicsDevice) : base("Camera") {
             _graphicsDevice = graphicsDevice;
         }
 

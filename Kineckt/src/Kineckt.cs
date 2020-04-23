@@ -22,6 +22,7 @@ namespace Kineckt {
         private RenderTarget2D _mainBuffer;
         private DepthStencilState _depth;
         private Model _plane;
+        private Scene _scene;
 
         private float AspectRatio => _graphics.PreferredBackBufferWidth / (float) _graphics.PreferredBackBufferHeight;
 
@@ -51,6 +52,11 @@ namespace Kineckt {
                     GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color,
                     DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.DiscardContents);
             });
+
+            _scene = new Scene();
+            _scene.Spawn(new Sun());
+            _scene.Spawn(new Camera(GraphicsDevice));
+
             base.Initialize();
         }
 
@@ -59,8 +65,16 @@ namespace Kineckt {
             _model = Content.Load<Model>("models/starshipOmega");
             _plane = Content.Load<Model>("models/plane");
             _texture = Content.Load<Texture2D>("images/starshipOmegaPaintOver");
+            var krakula = Content.Load<Texture2D>("images/krakula-xl");
             _shadowMapGenerate = Content.Load<Effect>("shaders/ShadowMapsGenerate");
             _diffuse = Content.Load<Effect>("shaders/Diffuse");
+            
+            _scene.Spawn(new ModelRenderer("foo", GraphicsDevice, _shadowMapRenderTarget) {
+                Model = _model, Effect = _diffuse, Texture = _texture, ShadowMapEffect = _shadowMapGenerate
+            });
+            _scene.Spawn(new ModelRenderer("foo", GraphicsDevice, _shadowMapRenderTarget) {
+                Model = _plane, Effect = _diffuse, Texture = krakula, ShadowMapEffect = _shadowMapGenerate
+            });
         }
 
         protected override void UnloadContent() {
@@ -77,38 +91,27 @@ namespace Kineckt {
 
         protected override void Draw(GameTime gameTime) {
             var rotation = Matrix.CreateRotationY((float) gameTime.TotalGameTime.TotalSeconds);
-            var cameraPosition = Vector3.Transform(Vector3.Backward * 8, rotation);
-
-            var cameraLookAtVector = Vector3.Zero;
-            var cameraUpVector = Vector3.Up;
-
-            var viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraLookAtVector, cameraUpVector);
-
-            var projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                _fieldOfView,
-                AspectRatio,
-                NearClipPlane,
-                FarClipPlane
-            );
-
-            Matrix lightView = Matrix.CreateLookAt(new Vector3(2, 8, 2),
-                Vector3.Zero,
-                Vector3.Up);
-
-            Matrix lightProjection = Matrix.CreateOrthographic(10, 10, 1, 15);
-
-            Matrix lightViewProjection = lightView * lightProjection;
-
+            _scene.Camera.Position = Vector3.Transform(Vector3.Backward * 8, rotation);
+            _scene.Sun.Position = new Vector3(2, 8, 2);
 
             GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
             GraphicsDevice.Clear(Color.Red);
             GraphicsDevice.DepthStencilState = _depth;
-            DrawShadowMap(_model, lightViewProjection);
+            // DrawShadowMap(_model, _scene.Sun);
+            foreach (var go in _scene.GameObjects) {
+                go.DrawShadow(_scene);
+            }
 
             GraphicsDevice.SetRenderTarget(_mainBuffer);
             GraphicsDevice.Clear(Color.Aqua);
             GraphicsDevice.DepthStencilState = _depth;
 
+            foreach (var go in _scene.GameObjects) {
+                go.Draw(_scene);
+            }
+            // DrawModel(_model, _scene.Camera, _scene.Sun);
+            // DrawModel(_plane, _scene.Camera, _scene.Sun);
+            /*
             foreach (var mesh in _model.Meshes) {
                 foreach (var meshPart in mesh.MeshParts) {
                     var modelMatrix = mesh.ParentBone.Transform;
@@ -132,8 +135,7 @@ namespace Kineckt {
                         primitiveCount);
                 }
             }
-
-            base.Draw(gameTime);
+            */
 
 
             GraphicsDevice.SetRenderTarget(null);
@@ -142,10 +144,13 @@ namespace Kineckt {
                 new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
             _spriteBatch.Draw(_shadowMapRenderTarget, new Rectangle(0, 0, 200, 200), Color.White);
             _spriteBatch.End();
+
+            base.Draw(gameTime);
         }
 
-        private void DrawMesh(Camera camera, Sun sun) {
-            foreach (var mesh in _model.Meshes) {
+        /*
+        private void DrawModel(ModelRenderer modelRenderer, Camera camera, Sun sun) {
+            foreach (var mesh in modelRenderer.Meshes) {
                 foreach (var meshPart in mesh.MeshParts) {
                     Matrix modelMatrix = mesh.ParentBone.Transform;
 
@@ -170,13 +175,13 @@ namespace Kineckt {
             }
         }
 
-        private void DrawShadowMap(Model model, Matrix lightViewProjection) {
-            foreach (var mesh in model.Meshes) {
+        private void DrawShadowMap(ModelRenderer modelRenderer, Sun sun) {
+            foreach (var mesh in modelRenderer.Meshes) {
                 foreach (var meshPart in mesh.MeshParts) {
                     Matrix modelMatrix = mesh.ParentBone.Transform;
 
                     _shadowMapGenerate.Parameters["LightViewProj"]
-                        .SetValue(modelMatrix * lightViewProjection);
+                        .SetValue(modelMatrix * sun.GetLightViewProjection());
 
                     _shadowMapGenerate.CurrentTechnique.Passes[0].Apply();
 
@@ -191,5 +196,6 @@ namespace Kineckt {
                 }
             }
         }
+        */
     }
 }
