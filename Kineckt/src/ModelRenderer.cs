@@ -8,6 +8,7 @@ namespace Kineckt {
         private Effect Effect { get; set; } = Kineckt.DefaultEffect;
         private Effect ShadowMapEffect { get; set; } = Kineckt.DefaultShadowMapEffect;
         public Texture Texture { get; set; } = null;
+        public Texture AO { get; set; } = null;
 
         private readonly GraphicsDevice _graphicsDevice;
         private readonly RenderTarget2D _shadowMap;
@@ -15,6 +16,10 @@ namespace Kineckt {
         public ModelRenderer(string name, GraphicsDevice graphicsDevice, RenderTarget2D shadowMap) : base(name) {
             _graphicsDevice = graphicsDevice;
             _shadowMap = shadowMap;
+            var white = new Texture2D(graphicsDevice, 1, 1);
+            white.SetData(new[]{Color.White});
+            AO = white;
+            Texture = white;
         }
 
         public override void DrawShadow(Scene scene) {
@@ -48,7 +53,7 @@ namespace Kineckt {
                 foreach (var mesh in Model.Meshes) {
                     foreach (var meshPart in mesh.MeshParts) {
                         var matrix = Matrix.CreateTranslation(Position) * Matrix.CreateFromQuaternion(Rotation);
-                        Matrix modelMatrix = mesh.ParentBone.Transform * matrix;
+                        var modelMatrix = mesh.ParentBone.Transform * matrix;
 
                         Effect.Parameters["World"].SetValue(modelMatrix);
                         Effect.Parameters["View"].SetValue(scene.Camera.GetViewMatrix());
@@ -56,6 +61,9 @@ namespace Kineckt {
 
                         if (Texture != null) {
                             Effect.Parameters["Alberto"].SetValue(Texture);
+                        }
+                        if (AO != null) {
+                            Effect.Parameters["AmbientOcclusion"].SetValue(AO);
                         }
 
                         Effect.Parameters["Shadow"].SetValue(_shadowMap);

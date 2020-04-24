@@ -8,6 +8,7 @@ matrix ViewInverse;
 matrix ProjectionInverse;
 
 sampler Alberto;
+sampler AmbientOcclusion;
 
 sampler Shadow;
 matrix ShadowProjection;
@@ -33,6 +34,8 @@ Diffuse_VSOut Diffuse_VertexShader(float4 Position : SV_POSITION, float2 UV : TE
 float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
 {
     float4 color = tex2D(Alberto, input.UV);
+    float4 ao = tex2D(AmbientOcclusion, input.UV);
+    ao = ao * ao * ao * ao;
     
     float4 shadowUV = input.ShadowPosition;
     shadowUV /= shadowUV.w;
@@ -40,7 +43,7 @@ float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
     float shadowDepth = tex2D(Shadow, shadowUV.xy).r;
     float depth = input.ShadowPosition.z / input.ShadowPosition.w;
     float shadow = smoothstep(.002, .00001, depth - shadowDepth);
-    color.rgb = lerp(color.rgb * shadow, color.rgb, .6);
+    color.rgb = lerp(color.rgb * shadow, color.rgb, .6) * ao.rgb;
     
     return color;
 }

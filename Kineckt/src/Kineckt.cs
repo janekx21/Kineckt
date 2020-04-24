@@ -50,13 +50,14 @@ namespace Kineckt {
             var model = Content.Load<Model>("models/starshipOmega");
             var plane = Content.Load<Model>("models/plane");
             var texture = Content.Load<Texture2D>("images/starshipOmegaPaintOver");
+            var ao = Content.Load<Texture2D>("images/starshipOmegaAO");
             var krakula = Content.Load<Texture2D>("images/krakula-xl");
             DefaultShadowMapEffect = Content.Load<Effect>("shaders/ShadowMapsGenerate");
 
             DefaultEffect = Content.Load<Effect>("shaders/Diffuse");
 
             _ship = new ModelRenderer("Ship", GraphicsDevice, _shadowMapRenderTarget) {
-                Model = model, Texture = texture
+                Model = model, Texture = texture, AO = ao
             };
             _scene.Spawn(_ship);
             _scene.Spawn(new ModelRenderer("Plane", GraphicsDevice, _shadowMapRenderTarget) {
