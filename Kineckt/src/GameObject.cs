@@ -10,9 +10,10 @@ namespace Kineckt {
         public Quaternion Rotation { get; set; } = Quaternion.Identity;
         public string Name { get; }
 
+        protected float TimeAlive = 0;
+
         public virtual void Update(GameTime gameTime) {
-            // do nothing
-            // aka freeze
+            TimeAlive += (float) gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public virtual void DrawShadow(Scene scene) {

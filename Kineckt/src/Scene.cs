@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 
 namespace Kineckt {
     public class Scene {
@@ -24,6 +25,21 @@ namespace Kineckt {
             }
 
             GameObjects.Add(go);
+        }
+
+        public void Destroy(GameObject go) {
+            if (!GameObjects.Remove(go)) {
+                throw new Exception("Game Object could not be found");
+            }
+
+            switch (go) {
+                case Sun _:
+                    Sun = null;
+                    break;
+                case Camera _:
+                    Camera = null;
+                    break;
+            }
         }
     }
 }

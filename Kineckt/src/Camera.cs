@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,7 +12,9 @@ namespace Kineckt {
         private readonly GraphicsDevice _graphicsDevice;
         public Vector3 LookTarget = Vector3.Zero;
 
-        private float _shakeIntensity = 0;
+        private Vector3 _shakeVelocity = Vector3.Zero;
+
+        private readonly Random _rnd = new Random();
 
         public Camera(GraphicsDevice graphicsDevice) : base("Camera") {
             _graphicsDevice = graphicsDevice;
@@ -19,8 +22,20 @@ namespace Kineckt {
 
         private float AspectRatio => _graphicsDevice.Viewport.Width / (float) _graphicsDevice.Viewport.Height;
 
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+            var speed = _shakeVelocity.Length() * 10;
+            _shakeVelocity = _shakeVelocity.moveTowards(Vector3.Zero, (float) gameTime.ElapsedGameTime.TotalSeconds * speed);
+        }
+
         public Matrix GetViewMatrix() {
-            return Matrix.CreateLookAt(Position, LookTarget, Vector3.Up);
+            var shake = _shakeVelocity;
+            var shakeMatrix = Matrix.CreateFromYawPitchRoll(shake.X, shake.Y, shake.Z);
+            return Matrix.CreateLookAt(Position, LookTarget, Vector3.Up) * shakeMatrix;
+        }
+
+        private float Random() {
+            return (float) _rnd.NextDouble();
         }
 
         public Matrix GetProjectionMatrix() {
@@ -30,6 +45,11 @@ namespace Kineckt {
                 NearClipPlane,
                 FarClipPlane
             );
+        }
+
+        public void Shake(float intensity) {
+            var shakeAdd = new Vector3(Random(), Random(), Random()) * 2 - Vector3.One;
+            _shakeVelocity += shakeAdd * intensity;
         }
     }
 }

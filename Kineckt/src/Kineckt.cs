@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -68,7 +69,7 @@ namespace Kineckt {
             _scene.Spawn(new Camera(GraphicsDevice));
 
             _scene.Spawn(new Player(GraphicsDevice, _shadowMapRenderTarget) {
-                Cam = _scene.Camera
+                Scene = _scene
             });
             _scene.Spawn(new Plane(GraphicsDevice, _shadowMapRenderTarget));
         }
@@ -78,7 +79,7 @@ namespace Kineckt {
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             
-            foreach (var go in _scene.GameObjects) go.Update(gameTime);
+            foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -126,7 +127,7 @@ namespace Kineckt {
             GraphicsDevice.DepthStencilState = _depth;
             GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
-            foreach (var go in _scene.GameObjects) go.DrawShadow(_scene);
+            foreach (var go in new List<GameObject>(_scene.GameObjects)) go.DrawShadow(_scene);
         }
 
         private void DrawModels(GameTime gameTime) {
@@ -135,7 +136,7 @@ namespace Kineckt {
             GraphicsDevice.DepthStencilState = _depth;
             GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
-            foreach (var go in _scene.GameObjects) go.Draw(_scene);
+            foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Draw(_scene);
         }
     }
 }
