@@ -52,7 +52,8 @@ namespace Kineckt {
                 Scene.Spawn(new Bullet(_graphicsDevice, _shadow, Scene) {
                     Position = Position + Vector3.Forward*8
                 });
-                Scene.Camera.Shake(.01f);
+
+                Scene.Camera.Shake(.005f);
                 shootTimer = .15f;
             }
 

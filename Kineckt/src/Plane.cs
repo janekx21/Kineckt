@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,14 +16,17 @@ namespace Kineckt {
 
         public static void LoadContent(ContentManager content) {
             model = content.Load<Model>("models/plane");
-            texture = content.Load<Texture2D>("images/collection");
+            texture = content.Load<Texture2D>("images/collectionDark");
         }
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-            // Position += Vector3.Forward * deltaTime * 100;
+            Position += Vector3.Backward * deltaTime * 100;
+            if (Position.Z < -7000) {
+                Position = Vector3.Zero;
+            }
         }
     }
 }

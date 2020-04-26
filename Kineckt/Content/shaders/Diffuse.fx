@@ -14,6 +14,8 @@ texture Shadow;
 sampler ShadowSampler = sampler_state
 {
     Texture = <Shadow>;
+    AddressU = Clamp;
+    AddressV = Clamp;
 };
 matrix ShadowProjection;
 
@@ -43,11 +45,14 @@ float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
     
     float4 shadowUV = input.ShadowPosition;
     shadowUV /= shadowUV.w;
-    shadowUV = (shadowUV * .5 +.5) * float4(1,-1, 1, 1);
+    shadowUV = (shadowUV * .5 +.5);
+    shadowUV.y = 1 - shadowUV.y;
     float shadowDepth = tex2D(ShadowSampler, shadowUV.xy).r;
     float depth = input.ShadowPosition.z / input.ShadowPosition.w;
     float shadow = smoothstep(.002, .00001, depth - shadowDepth);
     color.rgb = lerp(color.rgb * shadow, color.rgb, .5) * ao.rgb;
+    
+    // color.rgb = lerp(color.rgb, float3(shadowUV.xy, 0), 0.99);
     
     return color;
 }

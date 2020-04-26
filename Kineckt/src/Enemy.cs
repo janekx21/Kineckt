@@ -37,7 +37,7 @@ namespace Kineckt
         public static void LoadContent(ContentManager content)
         {
             model = content.Load<Model>("models/baseEnemy");
-            //texture = content.Load<Texture2D>("");
+            texture = content.Load<Texture2D>("images/collection");
         }
 
         public override void Update(GameTime gameTime)

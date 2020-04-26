@@ -8,6 +8,7 @@ namespace Kineckt {
         private readonly RenderTarget2D _shadow;
         private readonly Scene _scene;
         private float _timer = 0;
+        private float halt = 3;
         Random _rnd = new Random();
 
         public EnemySpawner(GraphicsDevice graphicsDevice, RenderTarget2D shadow, Scene scene) : base("Enemy Spawner") {
@@ -23,7 +24,8 @@ namespace Kineckt {
                 _scene.Spawn(new Enemy(_graphicsDevice, _shadow) {
                     Position = Position + Vector3.Right * h * 30
                 });
-                _timer = 1f;
+                _timer = halt;
+                halt *= .95f;
             }
 
             _timer -= (float) gameTime.ElapsedGameTime.TotalSeconds;

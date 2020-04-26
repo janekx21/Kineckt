@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -16,6 +17,7 @@ namespace Kineckt {
 
         private RenderTarget2D _shadowMapRenderTarget;
         private SpriteBatch _spriteBatch;
+        public static readonly Random Rnd = new Random(Environment.TickCount);
 
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
@@ -54,7 +56,14 @@ namespace Kineckt {
             var subclassTypes = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var item in subclassTypes) {
                 var funk = item.GetMethod("LoadContent", new[] {typeof(ContentManager)});
-                if (funk != null) funk.Invoke(null, new object[] {Content});
+                try {
+                    if (funk != null) funk.Invoke(null, new object[] {Content});
+                }
+                catch (Exception e) {
+                    Console.WriteLine(item);
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
         }
 
@@ -64,7 +73,7 @@ namespace Kineckt {
         protected override void BeginRun() {
             base.BeginRun();
             _scene.Spawn(new Sun {
-                Position = new Vector3(28, 20, 2)
+                Position = new Vector3(200, 200, -50)
             });
             _scene.Spawn(new Camera(GraphicsDevice));
 

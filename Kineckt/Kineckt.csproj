@@ -53,6 +53,7 @@
     <Compile Include="src\GameObject.cs" />
     <Compile Include="src\Kineckt.cs" />
     <Compile Include="src\ModelRenderer.cs" />
+    <Compile Include="src\Particle.cs" />
     <Compile Include="src\Plane.cs" />
     <Compile Include="src\Player.cs" />
     <Compile Include="src\Rect.cs" />

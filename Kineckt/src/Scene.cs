@@ -29,7 +29,7 @@ namespace Kineckt {
 
         public void Destroy(GameObject go) {
             if (!GameObjects.Remove(go)) {
-                throw new Exception("Game Object could not be found");
+                // game object not found
             }
 
             switch (go) {
