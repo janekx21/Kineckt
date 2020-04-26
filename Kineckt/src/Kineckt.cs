@@ -22,6 +22,8 @@ namespace Kineckt {
         private Rectangle buttonRectangle;
         private SpriteFont font;
 
+        public static int score = 0;
+
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
             Content.RootDirectory = "Content";
@@ -41,6 +43,8 @@ namespace Kineckt {
                 _mainBuffer = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
                     GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color,
                     DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.DiscardContents);
+                buttonRectangle = new Rectangle(20, GraphicsDevice.Viewport.Height - 20 - button.Height, button.Width,
+                    button.Height);
             };
 
             _scene = new Scene();
@@ -56,7 +60,8 @@ namespace Kineckt {
 
             button = Content.Load<Texture2D>("images/green_button00");
             font = Content.Load<SpriteFont>("fonts/File");
-            buttonRectangle = new Rectangle(20, 20, button.Width, button.Height);
+            buttonRectangle = new Rectangle(20, GraphicsDevice.Viewport.Height - 20 - button.Height, button.Width,
+                button.Height);
 
 
             // load content via reflection
@@ -88,8 +93,8 @@ namespace Kineckt {
                 Scene = _scene
             });
             _scene.Spawn(new Plane(GraphicsDevice, _shadowMapRenderTarget));
-            _scene.Spawn(new EnemySpawner(GraphicsDevice,_shadowMapRenderTarget, _scene) {
-                Position = new Vector3(0,0,-20f)
+            _scene.Spawn(new EnemySpawner(GraphicsDevice, _shadowMapRenderTarget, _scene) {
+                Position = new Vector3(0, 0, -20f)
             });
         }
 
@@ -97,7 +102,7 @@ namespace Kineckt {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
+
             foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Update(gameTime);
 
             var state = Mouse.GetState();
@@ -111,7 +116,6 @@ namespace Kineckt {
         }
 
         protected override void Draw(GameTime gameTime) {
-
             DrawShadows(gameTime);
 
             DrawModels(gameTime);
@@ -121,11 +125,16 @@ namespace Kineckt {
             _spriteBatch.Draw(_mainBuffer,
                 new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
             // _spriteBatch.Draw(_shadowMapRenderTarget, new Rectangle(0, 0, 200, 200), Color.White);
-            
+
             _spriteBatch.Draw(button, buttonRectangle.Location.ToVector2());
             var size = font.MeasureString("Exit");
             _spriteBatch.DrawString(font, "Exit", buttonRectangle.Center.ToVector2() - size * .5f, Color.White);
-            
+
+            var text = $"Score: {score}";
+            var textSize = font.MeasureString(text);
+            _spriteBatch.DrawString(font, text,
+                GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize - Vector2.One * 20, Color.White);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);

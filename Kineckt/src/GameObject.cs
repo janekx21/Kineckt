@@ -40,5 +40,9 @@ namespace Kineckt {
             // do nothing
             // aka i am invisible
         }
+
+        public virtual void OnDie() {
+            // empty
+        }
     }
 }

@@ -28,8 +28,8 @@ namespace Kineckt {
         }
 
         public void Destroy(GameObject go) {
-            if (!GameObjects.Remove(go)) {
-                // game object not found
+            if (GameObjects.Remove(go)) {
+                go.OnDie();
             }
 
             switch (go) {

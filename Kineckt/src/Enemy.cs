@@ -12,7 +12,7 @@ namespace Kineckt
 {
     public class Enemy : ModelRenderer
     {
-        private const float Speed = 5;
+        private static float Speed = 5;
         private static Model model;
         private static Texture texture;
         
@@ -31,7 +31,8 @@ namespace Kineckt
         {
             Texture = texture;
             Model = model;
-            rectangle.Size = new Vector2(4,4);
+            rectangle.Size = new Vector2(6,6);
+            Speed += 1f;
         }
 
         public static void LoadContent(ContentManager content)
@@ -74,6 +75,12 @@ namespace Kineckt
             rectangle.Position.Y = Position.Z;
 
 
+        }
+
+
+        public override void OnDie() {
+            base.OnDie();
+            Kineckt.score += 12;
         }
     }
 }
