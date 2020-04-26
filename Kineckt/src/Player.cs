@@ -50,7 +50,7 @@ namespace Kineckt {
                     Position = Position + Vector3.Forward*8
                 });
                 Scene.Camera.Shake(.01f);
-                
+                shootTimer = .15f;
             }
 
             shootTimer -= deltaTime;
