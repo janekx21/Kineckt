@@ -15,7 +15,7 @@ namespace Kineckt
         private const float Speed = 5;
         private static Model model;
         private static Texture texture;
-        private static Rect rectangle = new Rect(new Vector2(400,400),new Vector2(5,5));
+        
         private static readonly Vector3 MinPosition = new Vector3(-40, -200, -20);
         private static readonly Vector3 MaxPosition = new Vector3(40, 200, 30);
 
@@ -31,6 +31,7 @@ namespace Kineckt
         {
             Texture = texture;
             Model = model;
+            rectangle.Size = new Vector2(4,4);
         }
 
         public static void LoadContent(ContentManager content)
@@ -48,8 +49,7 @@ namespace Kineckt
             if (_state == State.Left)
             {
                 Position += Vector3.Left * deltaTime * Speed;
-                rectangle.Position.X = Position.X;
-                rectangle.Position.Y = Position.Z;
+                
                 if (Position.X < MinPosition.X)
                 {
                     _state = State.Right;
@@ -59,8 +59,7 @@ namespace Kineckt
             else if (_state == State.Right)
             {
                 Position += Vector3.Right * deltaTime * Speed;
-                rectangle.Position.X = Position.X;
-                rectangle.Position.Y = Position.Z;
+                
                 if (Position.X > MaxPosition.X)
                 {
                     _state = State.Left;
@@ -71,6 +70,10 @@ namespace Kineckt
             
             var y = (float)Math.Sin(TimeAlive * 4.2f) * .3f;
             Position = new Vector3(Position.X, y, Position.Z);
+            rectangle.Position.X = Position.X;
+            rectangle.Position.Y = Position.Z;
+
+
         }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +12,6 @@ namespace Kineckt {
         private readonly RenderTarget2D _shadow;
         private static Model model;
         private static Texture texture;
-        private static Rect rectangle = new Rect(new Vector2(400, 400), new Vector2(5, 5));
 
         private const float Speed = 80;
         private const float Acceleration = 1200;
@@ -25,6 +26,7 @@ namespace Kineckt {
             _shadow = shadow;
             Texture = texture;
             Model = model;
+            rectangle.Size = new Vector2(8,12);
         }
 
         public Scene Scene { get; set; } = null;
@@ -86,6 +88,18 @@ namespace Kineckt {
             // makes player tilt in move direction
             Rotation = Quaternion.CreateFromAxisAngle(Vector3.Forward, _vel.X * .005f);
             Rotation *= Quaternion.CreateFromAxisAngle(Vector3.Right, _vel.Y * .005f);
+
+            foreach (var gameObject in new List<GameObject>(Scene.GameObjects))
+            {
+                if (gameObject is Enemy e)
+                {
+                    if (Collision.Intersect(e, this))
+                    {
+                        Scene.Destroy(this);
+                    }
+
+                }
+            }
         }
     }
 }

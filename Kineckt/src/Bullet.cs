@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +16,7 @@ namespace Kineckt {
             _scene = scene;
             Texture = texture;
             Model = model;
+            rectangle.Size = Vector2.One;
         }
 
         public static void LoadContent(ContentManager content) {
@@ -27,6 +30,22 @@ namespace Kineckt {
 
             Position += Vector3.Forward * deltaTime * Speed;
             Rotation = Quaternion.CreateFromAxisAngle(Vector3.Forward, TimeAlive * 12);
+
+            rectangle.Position.X = Position.X;
+            rectangle.Position.Y = Position.Z;
+
+            foreach (var gameObject in new List<GameObject>(_scene.GameObjects))
+            {
+                if (gameObject is Enemy e)
+                {
+                    if (Collision.Intersect(e, this))
+                    {
+                        _scene.Destroy(e);
+                        _scene.Destroy(this);
+                    }
+                    
+                }
+            }
 
             if (Position.Z < -50) {
                 _scene.Destroy(this);

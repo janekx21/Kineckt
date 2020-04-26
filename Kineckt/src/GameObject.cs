@@ -7,11 +7,25 @@ namespace Kineckt {
         }
 
         public Rect rectangle { get; set; } = new Rect(new Vector2(0, 0), new Vector2(0, 0));
-        public Vector3 Position { get; set; } = Vector3.Zero;
+
+        private Vector3 _position = Vector3.Zero;
+        public Vector3 Position
+        {
+            get { return _position; }
+            set { _position = value;
+                rectangle.Position = new Vector2(value.X, value.Z);
+            }
+        }
+
         public Quaternion Rotation { get; set; } = Quaternion.Identity;
         public string Name { get; }
 
         protected float TimeAlive = 0;
+
+        protected GameObject()
+        {
+            throw new System.NotImplementedException();
+        }
 
         public virtual void Update(GameTime gameTime) {
             TimeAlive += (float) gameTime.ElapsedGameTime.TotalSeconds;
