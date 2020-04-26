@@ -11,6 +11,8 @@ namespace Kineckt {
         private readonly GraphicsDevice _graphicsDevice;
         public Vector3 LookTarget = Vector3.Zero;
 
+        private float _shakeIntensity = 0;
+
         public Camera(GraphicsDevice graphicsDevice) : base("Camera") {
             _graphicsDevice = graphicsDevice;
         }

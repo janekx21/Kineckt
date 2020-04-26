@@ -44,23 +44,12 @@ namespace Kineckt {
 
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            var model = Content.Load<Model>("models/starshipOmega");
-            var plane = Content.Load<Model>("models/plane");
-            var texture = Content.Load<Texture2D>("images/starshipOmegaPaintOver");
-            var ao = Content.Load<Texture2D>("images/starshipOmegaAO");
-            var krakula = Content.Load<Texture2D>("images/krakula-xl");
             DefaultShadowMapEffect = Content.Load<Effect>("shaders/ShadowMapsGenerate");
 
             DefaultEffect = Content.Load<Effect>("shaders/Diffuse");
 
-            /*
-            _ship = new ModelRenderer("Ship", GraphicsDevice, _shadowMapRenderTarget) {
-                Model = model, Texture = texture, AO = ao
-            };
-            _scene.Spawn(_ship);
-            */
 
-
+            // load content via reflection
             var subclassTypes = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var item in subclassTypes) {
                 var funk = item.GetMethod("LoadContent", new[] {typeof(ContentManager)});
@@ -93,20 +82,21 @@ namespace Kineckt {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            
+            foreach (var go in _scene.GameObjects) go.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
             // Turn camera
-            var rotation = Matrix.CreateRotationY((float) gameTime.TotalGameTime.TotalSeconds);
-            _scene.Camera.Position = Vector3.Transform(Vector3.Backward * 8, rotation);
+            // var rotation = Matrix.CreateRotationY((float) gameTime.TotalGameTime.TotalSeconds);
+            // _scene.Camera.Position = Vector3.Transform(Vector3.Backward * 8, rotation);
             /*
             _ship.Rotation =
                 Quaternion.CreateFromAxisAngle(Vector3.Up, (float) gameTime.TotalGameTime.TotalSeconds * -.3f);
                 */
 
-            foreach (var go in _scene.GameObjects) go.Update(gameTime);
 
             DrawShadows(gameTime);
 
