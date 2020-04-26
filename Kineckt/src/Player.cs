@@ -10,7 +10,8 @@ namespace Kineckt {
         private readonly RenderTarget2D _shadow;
         private static Model model;
         private static Texture texture;
-        
+        private static Rect rectangle = new Rect(new Vector2(400, 400), new Vector2(5, 5));
+
         private const float Speed = 80;
         private const float Acceleration = 1200;
         private const float Friction = 600;
@@ -90,6 +91,8 @@ namespace Kineckt {
 
             // play area borders
             Position = Vector3.Clamp(Position, MinPosition, MaxPosition);
+            rectangle.Position.X = Position.X;
+            rectangle.Position.Y = Position.Z;
             // makes player tilt in move direction
             Rotation = Quaternion.CreateFromAxisAngle(Vector3.Forward, _vel.X * .005f);
             Rotation *= Quaternion.CreateFromAxisAngle(Vector3.Right, _vel.Y * .005f);

@@ -13,7 +13,7 @@ namespace Kineckt
             Size = size;
         }
 
-        public static bool intersect(Rect a, Rect b)
+        public static bool Intersect(Rect a, Rect b)
         {
             
             //float posPosXa = a.Position.X + a.Size.X;

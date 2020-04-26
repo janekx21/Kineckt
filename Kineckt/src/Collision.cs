@@ -8,6 +8,9 @@ namespace Kineckt
 {
     public static class Collision
     {
-        if (Rect
+        public static bool Intersect(GameObject a, GameObject b)
+        {
+            return Rect.Intersect(a.rectangle, b.rectangle);
+        }
     }
 }

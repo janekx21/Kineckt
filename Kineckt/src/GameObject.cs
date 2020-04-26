@@ -6,6 +6,7 @@ namespace Kineckt {
             Name = name;
         }
 
+        public Rect rectangle { get; set; } = new Rect(new Vector2(0, 0), new Vector2(0, 0));
         public Vector3 Position { get; set; } = Vector3.Zero;
         public Quaternion Rotation { get; set; } = Quaternion.Identity;
         public string Name { get; }
