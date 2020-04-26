@@ -47,7 +47,7 @@ namespace Kineckt {
 
 
             if (state.IsKeyDown(Keys.A) && shootTimer <= 0) {
-                Scene.Spawn(new Bullet(_graphicsDevice, _shadow) {
+                Scene.Spawn(new Bullet(_graphicsDevice, _shadow, Scene) {
                     Position = Position + Vector3.Forward*8
                 });
                 Scene.Camera.Shake(.01f);
@@ -63,17 +63,7 @@ namespace Kineckt {
             if (state.IsKeyDown(Keys.Down)) mov.Y += 1;
             if (mov.Length() > 1) mov.Normalize();
 
-            // makes player stop if he presses nothing
-            // this is a "move towards"
-            // TODO move into extension function
-            if (_vel.LengthSquared() > 0) {
-                var dist = (-_vel).Length();
-                var v = deltaTime * Friction;
-                v = Math.Min(v, dist);
-                var c = _vel;
-                c.Normalize();
-                _vel -= c * v;
-            }
+            _vel = _vel.MoveTowards(Vector2.Zero, deltaTime * Friction);
 
             // accelerate player
             _vel += mov * deltaTime * Acceleration;
