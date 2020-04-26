@@ -97,6 +97,11 @@ namespace Kineckt {
                     if (Collision.Intersect(e, this))
                     {
                         Scene.Destroy(this);
+                        for (var i = 0; i < 400; i++) {
+                            Scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadow, Scene) {
+                                Position = Position
+                            });
+                        }
                     }
 
                 }
