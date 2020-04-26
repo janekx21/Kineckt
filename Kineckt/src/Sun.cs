@@ -6,11 +6,11 @@ namespace Kineckt {
         }
 
         public Matrix GetLightViewProjection() {
-            Matrix lightView = Matrix.CreateLookAt(Position,
+            var lightView = Matrix.CreateLookAt(Position,
                 Vector3.Zero,
                 Vector3.Up);
 
-            Matrix lightProjection = Matrix.CreateOrthographic(180, 180, 10, 180);
+            var lightProjection = Matrix.CreateOrthographic(180, 180, 10, 180);
 
             return lightView * lightProjection;
         }

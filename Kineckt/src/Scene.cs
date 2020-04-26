@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Kineckt {
     public class Scene {
-        public Camera Camera { get; set; } = null;
-        public Sun Sun { get; set; } = null;
+        public Camera Camera { get; set; }
+        public Sun Sun { get; set; }
         public List<GameObject> GameObjects { get; } = new List<GameObject>();
 
 

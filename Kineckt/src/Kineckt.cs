@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -6,22 +6,23 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Kineckt {
     public class Kineckt : Game {
-        public static Effect DefaultEffect { get; private set; } = null;
-        public static Effect DefaultShadowMapEffect { get; private set; } = null;
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-
-        private RenderTarget2D _shadowMapRenderTarget;
-        private RenderTarget2D _mainBuffer;
 
         private DepthStencilState _depth;
+        private RenderTarget2D _mainBuffer;
 
         private Scene _scene;
+
+        private RenderTarget2D _shadowMapRenderTarget;
+        private SpriteBatch _spriteBatch;
 
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
             Content.RootDirectory = "Content";
         }
+
+        public static Effect DefaultEffect { get; private set; }
+        public static Effect DefaultShadowMapEffect { get; private set; }
 
         protected override void Initialize() {
             Window.AllowUserResizing = true;
@@ -60,7 +61,7 @@ namespace Kineckt {
             */
 
 
-            var subclassTypes = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+            var subclassTypes = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var item in subclassTypes) {
                 var funk = item.GetMethod("LoadContent", new[] {typeof(ContentManager)});
                 if (funk != null) funk.Invoke(null, new object[] {Content});
@@ -76,7 +77,7 @@ namespace Kineckt {
                 Position = new Vector3(28, 20, 2)
             });
             _scene.Spawn(new Camera(GraphicsDevice));
-            
+
             _scene.Spawn(new Player(GraphicsDevice, _shadowMapRenderTarget) {
                 Cam = _scene.Camera
             });
@@ -85,9 +86,8 @@ namespace Kineckt {
 
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape)) {
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            }
 
             base.Update(gameTime);
         }
@@ -101,9 +101,7 @@ namespace Kineckt {
                 Quaternion.CreateFromAxisAngle(Vector3.Up, (float) gameTime.TotalGameTime.TotalSeconds * -.3f);
                 */
 
-            foreach (var go in _scene.GameObjects) {
-                go.Update(gameTime);
-            }
+            foreach (var go in _scene.GameObjects) go.Update(gameTime);
 
             DrawShadows(gameTime);
 
@@ -119,7 +117,7 @@ namespace Kineckt {
             base.Draw(gameTime);
         }
 
-        void SetupBuffers() {
+        private void SetupBuffers() {
             _shadowMapRenderTarget = new RenderTarget2D(GraphicsDevice,
                 2048, 2048, false, SurfaceFormat.Single,
                 DepthFormat.Depth24, 0, RenderTargetUsage.PlatformContents);
@@ -132,26 +130,22 @@ namespace Kineckt {
                 {DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less};
         }
 
-        void DrawShadows(GameTime gameTime) {
+        private void DrawShadows(GameTime gameTime) {
             GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
             GraphicsDevice.Clear(Color.Red);
             GraphicsDevice.DepthStencilState = _depth;
             GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
-            foreach (var go in _scene.GameObjects) {
-                go.DrawShadow(_scene);
-            }
+            foreach (var go in _scene.GameObjects) go.DrawShadow(_scene);
         }
 
-        void DrawModels(GameTime gameTime) {
+        private void DrawModels(GameTime gameTime) {
             GraphicsDevice.SetRenderTarget(_mainBuffer);
             GraphicsDevice.Clear(Color.Aqua);
             GraphicsDevice.DepthStencilState = _depth;
             GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
-            foreach (var go in _scene.GameObjects) {
-                go.Draw(_scene);
-            }
+            foreach (var go in _scene.GameObjects) go.Draw(_scene);
         }
     }
 }
