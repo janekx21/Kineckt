@@ -18,13 +18,13 @@ namespace Kineckt
         private static readonly Vector3 MinPosition = new Vector3(-40, -200, -20);
         private static readonly Vector3 MaxPosition = new Vector3(40, 200, 30);
 
-        enum State
+        private enum State
         {
             Left,
             Right,
         }
 
-        State _state = State.Left;
+        private State _state = State.Left;
 
         public Enemy(GraphicsDevice graphicsDevice, RenderTarget2D shadow) : base("Enemy", graphicsDevice, shadow)
         {
@@ -61,9 +61,11 @@ namespace Kineckt
                     _state = State.Left;
                 }
             }
-            var y = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4.2f);
-            Position = new Vector3(Position.X, y, Position.Z);
 
+            Position += Vector3.Backward * deltaTime * Speed * .2f;
+            
+            var y = (float)Math.Sin(TimeAlive * 4.2f) * .3f;
+            Position = new Vector3(Position.X, y, Position.Z);
         }
     }
 }

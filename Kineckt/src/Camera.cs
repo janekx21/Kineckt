@@ -25,7 +25,7 @@ namespace Kineckt {
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
             var speed = _shakeVelocity.Length() * 10;
-            _shakeVelocity = _shakeVelocity.moveTowards(Vector3.Zero, (float) gameTime.ElapsedGameTime.TotalSeconds * speed);
+            _shakeVelocity = _shakeVelocity.MoveTowards(Vector3.Zero, (float) gameTime.ElapsedGameTime.TotalSeconds * speed);
         }
 
         public Matrix GetViewMatrix() {

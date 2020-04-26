@@ -72,11 +72,9 @@ namespace Kineckt {
                 Scene = _scene
             });
             _scene.Spawn(new Plane(GraphicsDevice, _shadowMapRenderTarget));
-            _scene.Spawn(new Enemy(GraphicsDevice, _shadowMapRenderTarget)
-            {
-                Position = new Vector3(0, 0, 0)
+            _scene.Spawn(new EnemySpawner(GraphicsDevice,_shadowMapRenderTarget, _scene) {
+                Position = new Vector3(0,0,-20f)
             });
-
         }
 
         protected override void Update(GameTime gameTime) {

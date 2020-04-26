@@ -8,6 +8,5 @@ namespace Kineckt
 {
     public static class Collision
     {
-        if (Rect
     }
 }
