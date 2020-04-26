@@ -10,6 +10,11 @@ namespace Kineckt {
             Name = name;
         }
 
+        public virtual void Update(GameTime gameTime) {
+            // do nothing
+            // aka freeze
+        }
+
         public virtual void DrawShadow(Scene scene) {
             // do nothing
             // aka i am invisible

@@ -10,7 +10,11 @@ matrix ProjectionInverse;
 sampler Alberto;
 sampler AmbientOcclusion;
 
-sampler Shadow;
+texture Shadow;
+sampler ShadowSampler = sampler_state
+{
+    Texture = <Shadow>;
+};
 matrix ShadowProjection;
 
 struct Diffuse_VSOut
@@ -40,10 +44,10 @@ float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
     float4 shadowUV = input.ShadowPosition;
     shadowUV /= shadowUV.w;
     shadowUV = (shadowUV * .5 +.5) * float4(1,-1, 1, 1);
-    float shadowDepth = tex2D(Shadow, shadowUV.xy).r;
+    float shadowDepth = tex2D(ShadowSampler, shadowUV.xy).r;
     float depth = input.ShadowPosition.z / input.ShadowPosition.w;
     float shadow = smoothstep(.002, .00001, depth - shadowDepth);
-    color.rgb = lerp(color.rgb * shadow, color.rgb, .6) * ao.rgb;
+    color.rgb = lerp(color.rgb * shadow, color.rgb, .5) * ao.rgb;
     
     return color;
 }

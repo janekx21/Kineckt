@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -12,11 +13,10 @@ namespace Kineckt {
 
         private RenderTarget2D _shadowMapRenderTarget;
         private RenderTarget2D _mainBuffer;
-        
+
         private DepthStencilState _depth;
-        
+
         private Scene _scene;
-        private ModelRenderer _ship;
 
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
@@ -37,10 +37,6 @@ namespace Kineckt {
             };
 
             _scene = new Scene();
-            _scene.Spawn(new Sun() {
-                Position = new Vector3(2, 8, 2)
-            });
-            _scene.Spawn(new Camera(GraphicsDevice));
 
             base.Initialize();
         }
@@ -56,16 +52,35 @@ namespace Kineckt {
 
             DefaultEffect = Content.Load<Effect>("shaders/Diffuse");
 
+            /*
             _ship = new ModelRenderer("Ship", GraphicsDevice, _shadowMapRenderTarget) {
                 Model = model, Texture = texture, AO = ao
             };
             _scene.Spawn(_ship);
-            _scene.Spawn(new ModelRenderer("Plane", GraphicsDevice, _shadowMapRenderTarget) {
-                Model = plane, Texture = krakula
-            });
+            */
+
+
+            var subclassTypes = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+            foreach (var item in subclassTypes) {
+                var funk = item.GetMethod("LoadContent", new[] {typeof(ContentManager)});
+                if (funk != null) funk.Invoke(null, new object[] {Content});
+            }
         }
 
         protected override void UnloadContent() {
+        }
+
+        protected override void BeginRun() {
+            base.BeginRun();
+            _scene.Spawn(new Sun {
+                Position = new Vector3(28, 20, 2)
+            });
+            _scene.Spawn(new Camera(GraphicsDevice));
+            
+            _scene.Spawn(new Player(GraphicsDevice, _shadowMapRenderTarget) {
+                Cam = _scene.Camera
+            });
+            _scene.Spawn(new Plane(GraphicsDevice, _shadowMapRenderTarget));
         }
 
         protected override void Update(GameTime gameTime) {
@@ -81,8 +96,14 @@ namespace Kineckt {
             // Turn camera
             var rotation = Matrix.CreateRotationY((float) gameTime.TotalGameTime.TotalSeconds);
             _scene.Camera.Position = Vector3.Transform(Vector3.Backward * 8, rotation);
+            /*
             _ship.Rotation =
                 Quaternion.CreateFromAxisAngle(Vector3.Up, (float) gameTime.TotalGameTime.TotalSeconds * -.3f);
+                */
+
+            foreach (var go in _scene.GameObjects) {
+                go.Update(gameTime);
+            }
 
             DrawShadows(gameTime);
 
@@ -106,7 +127,7 @@ namespace Kineckt {
             _mainBuffer = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
                 GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color,
                 DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.DiscardContents);
-            
+
             _depth = new DepthStencilState
                 {DepthBufferEnable = true, DepthBufferFunction = CompareFunction.Less};
         }
@@ -115,6 +136,7 @@ namespace Kineckt {
             GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
             GraphicsDevice.Clear(Color.Red);
             GraphicsDevice.DepthStencilState = _depth;
+            GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
             foreach (var go in _scene.GameObjects) {
                 go.DrawShadow(_scene);
@@ -125,6 +147,7 @@ namespace Kineckt {
             GraphicsDevice.SetRenderTarget(_mainBuffer);
             GraphicsDevice.Clear(Color.Aqua);
             GraphicsDevice.DepthStencilState = _depth;
+            GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
             foreach (var go in _scene.GameObjects) {
                 go.Draw(_scene);

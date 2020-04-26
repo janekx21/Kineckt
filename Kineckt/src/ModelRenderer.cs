@@ -26,7 +26,7 @@ namespace Kineckt {
             if (Model != null) {
                 foreach (var mesh in Model.Meshes) {
                     foreach (var meshPart in mesh.MeshParts) {
-                        var matrix = Matrix.CreateTranslation(Position) * Matrix.CreateFromQuaternion(Rotation);
+                        var matrix = Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateTranslation(Position);
                         var modelMatrix = mesh.ParentBone.Transform * matrix;
 
 
@@ -52,7 +52,7 @@ namespace Kineckt {
             if (Model != null) {
                 foreach (var mesh in Model.Meshes) {
                     foreach (var meshPart in mesh.MeshParts) {
-                        var matrix = Matrix.CreateTranslation(Position) * Matrix.CreateFromQuaternion(Rotation);
+                        var matrix = Matrix.CreateFromQuaternion(Rotation) * Matrix.CreateTranslation(Position);
                         var modelMatrix = mesh.ParentBone.Transform * matrix;
 
                         Effect.Parameters["World"].SetValue(modelMatrix);
