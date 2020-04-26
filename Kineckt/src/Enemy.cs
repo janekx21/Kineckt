@@ -34,7 +34,7 @@ namespace Kineckt
 
         public static void LoadContent(ContentManager content)
         {
-            model = content.Load<Model>("models/cube");
+            model = content.Load<Model>("models/baseEnemy");
             //texture = content.Load<Texture2D>("");
         }
 
@@ -61,7 +61,8 @@ namespace Kineckt
                     _state = State.Left;
                 }
             }
-
+            var y = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4.2f);
+            Position = new Vector3(Position.X, y, Position.Z);
 
         }
     }

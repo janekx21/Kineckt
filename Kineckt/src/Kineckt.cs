@@ -73,7 +73,7 @@ namespace Kineckt {
             _scene.Spawn(new Plane(GraphicsDevice, _shadowMapRenderTarget));
             _scene.Spawn(new Enemy(GraphicsDevice, _shadowMapRenderTarget)
             {
-                Position = new Vector3(0, 150, 0)
+                Position = new Vector3(0, 0, 0)
             });
 
         }
