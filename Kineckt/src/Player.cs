@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Kineckt {
     public class Player : ModelRenderer {
+        private readonly GraphicsDevice _graphicsDevice;
+        private readonly RenderTarget2D _shadow;
         private static Model model;
         private static Texture texture;
         
@@ -18,11 +20,14 @@ namespace Kineckt {
         private Vector2 _vel = Vector2.Zero;
 
         public Player(GraphicsDevice graphicsDevice, RenderTarget2D shadow) : base("Player", graphicsDevice, shadow) {
+            _graphicsDevice = graphicsDevice;
+            _shadow = shadow;
             Texture = texture;
             Model = model;
         }
 
-        public Camera Cam { get; set; } = null;
+        public Scene Scene { get; set; } = null;
+        private float shootTimer = 0;
 
         public static void LoadContent(ContentManager content) {
             model = content.Load<Model>("models/starshipOmega");
@@ -32,13 +37,23 @@ namespace Kineckt {
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
 
-            Cam.Position = Vector3.Lerp(Position + Vector3.Backward * 2 + Vector3.Up * 20,
+            Scene.Camera.Position = Vector3.Lerp(Position + Vector3.Backward * 2 + Vector3.Up * 20,
                 Vector3.Up * 28 + Vector3.Backward * 20, .85f);
-            Cam.LookTarget = Vector3.Lerp(Position, Vector3.Backward * 10, .85f);
+            Scene.Camera.LookTarget = Vector3.Lerp(Position, Vector3.Backward * 10, .85f);
 
             var state = Keyboard.GetState();
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
+
+            if (state.IsKeyDown(Keys.A) && shootTimer <= 0) {
+                Scene.Spawn(new Bullet(_graphicsDevice, _shadow) {
+                    Position = Position + Vector3.Forward*8
+                });
+                Scene.Camera.Shake(.01f);
+                shootTimer = .15f;
+            }
+
+            shootTimer -= deltaTime;
 
             var mov = Vector2.Zero;
             if (state.IsKeyDown(Keys.Left)) mov.X -= 1;
