@@ -18,6 +18,9 @@ namespace Kineckt {
         private RenderTarget2D _shadowMapRenderTarget;
         private SpriteBatch _spriteBatch;
         public static readonly Random Rnd = new Random(Environment.TickCount);
+        private Texture2D button;
+        private Rectangle buttonRectangle;
+        private SpriteFont font;
 
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
@@ -50,6 +53,10 @@ namespace Kineckt {
             DefaultShadowMapEffect = Content.Load<Effect>("shaders/ShadowMapsGenerate");
 
             DefaultEffect = Content.Load<Effect>("shaders/Diffuse");
+
+            button = Content.Load<Texture2D>("images/green_button00");
+            font = Content.Load<SpriteFont>("fonts/File");
+            buttonRectangle = new Rectangle(20, 20, button.Width, button.Height);
 
 
             // load content via reflection
@@ -93,28 +100,32 @@ namespace Kineckt {
             
             foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Update(gameTime);
 
+            var state = Mouse.GetState();
+            if (state.LeftButton == ButtonState.Pressed) {
+                if (buttonRectangle.Contains(state.Position)) {
+                    Exit();
+                }
+            }
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
-            // Turn camera
-            // var rotation = Matrix.CreateRotationY((float) gameTime.TotalGameTime.TotalSeconds);
-            // _scene.Camera.Position = Vector3.Transform(Vector3.Backward * 8, rotation);
-            /*
-            _ship.Rotation =
-                Quaternion.CreateFromAxisAngle(Vector3.Up, (float) gameTime.TotalGameTime.TotalSeconds * -.3f);
-                */
-
 
             DrawShadows(gameTime);
 
             DrawModels(gameTime);
 
             GraphicsDevice.SetRenderTarget(null);
-            _spriteBatch.Begin(0, BlendState.Opaque, SamplerState.AnisotropicClamp);
+            _spriteBatch.Begin(0, BlendState.AlphaBlend, SamplerState.AnisotropicClamp);
             _spriteBatch.Draw(_mainBuffer,
                 new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
-            _spriteBatch.Draw(_shadowMapRenderTarget, new Rectangle(0, 0, 200, 200), Color.White);
+            // _spriteBatch.Draw(_shadowMapRenderTarget, new Rectangle(0, 0, 200, 200), Color.White);
+            
+            _spriteBatch.Draw(button, buttonRectangle.Location.ToVector2());
+            var size = font.MeasureString("Exit");
+            _spriteBatch.DrawString(font, "Exit", buttonRectangle.Center.ToVector2() - size * .5f, Color.White);
+            
             _spriteBatch.End();
 
             base.Draw(gameTime);
