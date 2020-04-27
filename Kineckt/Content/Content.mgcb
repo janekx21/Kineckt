@@ -6,7 +6,7 @@
 /platform:Windows
 /config:
 /profile:HiDef
-/compress:False
+/compress:True
 
 #-------------------------------- References --------------------------------#
 

@@ -15,8 +15,8 @@ namespace Kineckt {
         private static Texture texture;
         Vector2 vel = Vector2.Zero;
 
-        private static readonly Vector3 MinPosition = new Vector3(-20, -200, -20);
-        private static readonly Vector3 MaxPosition = new Vector3(20, 200, 30);
+        private static readonly Vector3 MinPosition = new Vector3(-30, -200, -20);
+        private static readonly Vector3 MaxPosition = new Vector3(30, 200, 30);
 
         private float spawnTimer = 5;
 
