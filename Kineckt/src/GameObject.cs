@@ -17,6 +17,8 @@ namespace Kineckt {
             }
         }
 
+        public float Scale { get; set; } = 1;
+
         public Quaternion Rotation { get; set; } = Quaternion.Identity;
         public string Name { get; }
 
@@ -24,7 +26,7 @@ namespace Kineckt {
 
         protected GameObject()
         {
-            throw new System.NotImplementedException();
+            // throw new System.NotImplementedException();
         }
 
         public virtual void Update(GameTime gameTime) {

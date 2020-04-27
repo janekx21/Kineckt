@@ -23,6 +23,8 @@ namespace Kineckt {
         private SpriteFont font;
 
         public static int score = 0;
+        public static float energy = 100;
+        private Debug _debug;
 
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
@@ -96,12 +98,23 @@ namespace Kineckt {
             _scene.Spawn(new EnemySpawner(GraphicsDevice, _shadowMapRenderTarget, _scene) {
                 Position = new Vector3(0, 0, -20f)
             });
+
+            _debug = new Debug(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if (_scene.GameObjects.Find(o => o is Player) == null) {
+                float dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+                dt *= .3f;
+                gameTime.ElapsedGameTime = TimeSpan.FromSeconds(dt);
+            }
+
+
+            energy = (float) Math.Min(energy + gameTime.ElapsedGameTime.TotalSeconds * 50, 100);
 
             foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Update(gameTime);
 
@@ -120,6 +133,8 @@ namespace Kineckt {
 
             DrawModels(gameTime);
 
+            _debug.DrawDebug(_scene);
+
             GraphicsDevice.SetRenderTarget(null);
             _spriteBatch.Begin(0, BlendState.AlphaBlend, SamplerState.AnisotropicClamp);
             _spriteBatch.Draw(_mainBuffer,
@@ -134,6 +149,15 @@ namespace Kineckt {
             var textSize = font.MeasureString(text);
             _spriteBatch.DrawString(font, text,
                 GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize - Vector2.One * 20, Color.White);
+
+            var text2 = $"Energy: {energy:000}";
+            if (energy <= 0) {
+                text2 = $"Energy: ---";
+            }
+            var textSize2 = font.MeasureString(text2);
+            _spriteBatch.DrawString(font, text2,
+                GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize2 - Vector2.One * 20 -
+                Vector2.UnitY * textSize.Y, Color.White);
 
             _spriteBatch.End();
 

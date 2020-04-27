@@ -18,7 +18,7 @@ namespace Kineckt {
         private const float Friction = 600;
         private static readonly Vector3 MinPosition = new Vector3(-40, -200, -20);
         private static readonly Vector3 MaxPosition = new Vector3(40, 200, 30);
-        
+
         private Vector2 _vel = Vector2.Zero;
 
         public Player(GraphicsDevice graphicsDevice, RenderTarget2D shadow) : base("Player", graphicsDevice, shadow) {
@@ -26,35 +26,43 @@ namespace Kineckt {
             _shadow = shadow;
             Texture = texture;
             Model = model;
-            rectangle.Size = new Vector2(8,12);
+            rectangle.Size = new Vector2(8, 12);
+            NormalMap = normalMap;
         }
 
         public Scene Scene { get; set; } = null;
         private float shootTimer = 0;
+        private static Texture2D normalMap;
 
         public static void LoadContent(ContentManager content) {
             model = content.Load<Model>("models/starshipOmega");
             texture = content.Load<Texture2D>("images/starshipOmegaPaintOver");
+            normalMap = content.Load<Texture2D>("images/brickwall_normal");
         }
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
 
+
             Scene.Camera.Position = Vector3.Lerp(Position + Vector3.Backward * 2 + Vector3.Up * 20,
                 Vector3.Up * 28 + Vector3.Backward * 20, .85f);
-            Scene.Camera.LookTarget = Vector3.Lerp(Position, Vector3.Backward * 10, .85f);
+            Scene.Camera.LookTarget = Vector3.Lerp(Position, Vector3.Backward * 10, .82f);
 
             var state = Keyboard.GetState();
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
 
             if (state.IsKeyDown(Keys.A) && shootTimer <= 0) {
-                Scene.Spawn(new Bullet(_graphicsDevice, _shadow, Scene) {
-                    Position = Position + Vector3.Forward*8
-                });
+                if (Kineckt.energy > 0) {
+                    Scene.Spawn(new Bullet(_graphicsDevice, _shadow, Scene) {
+                        Position = Position + Vector3.Forward * 8
+                    });
 
-                Scene.Camera.Shake(.005f);
-                shootTimer = .15f;
+                    Scene.Camera.Shake(.005f);
+                    shootTimer = .15f;
+                    _vel += Vector2.UnitY * 20;
+                    Kineckt.energy -= 22;
+                }
             }
 
             shootTimer -= deltaTime;
@@ -70,7 +78,7 @@ namespace Kineckt {
 
             // accelerate player
             _vel += mov * deltaTime * Acceleration;
-            
+
             // there is a max player speed
             // this is a "clamp magnitude"
             // TODO move into extension function
@@ -90,12 +98,9 @@ namespace Kineckt {
             Rotation = Quaternion.CreateFromAxisAngle(Vector3.Forward, _vel.X * .005f);
             Rotation *= Quaternion.CreateFromAxisAngle(Vector3.Right, _vel.Y * .005f);
 
-            foreach (var gameObject in new List<GameObject>(Scene.GameObjects))
-            {
-                if (gameObject is Enemy e)
-                {
-                    if (Collision.Intersect(e, this))
-                    {
+            foreach (var gameObject in new List<GameObject>(Scene.GameObjects)) {
+                if (gameObject is Enemy e) {
+                    if (Collision.Intersect(e, this)) {
                         Scene.Destroy(this);
                         for (var i = 0; i < 400; i++) {
                             Scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadow, Scene) {
@@ -103,9 +108,11 @@ namespace Kineckt {
                             });
                         }
                     }
-
                 }
             }
+
+            Debug.WiredCube(Position, Rotation, new Vector3(rectangle.Size.X, 4f, rectangle.Size.Y),
+                Color.DarkGreen);
         }
     }
 }

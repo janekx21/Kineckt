@@ -10,7 +10,7 @@ namespace Kineckt {
                 Vector3.Zero,
                 Vector3.Up);
 
-            var lightProjection = Matrix.CreateOrthographic(200, 200, 10, 500);
+            var lightProjection = Matrix.CreateOrthographic(250, 250, 10, 500);
 
             return lightView * lightProjection;
         }

@@ -20,7 +20,7 @@ namespace Kineckt {
             _scene = scene;
             Texture = texture;
             Model = model;
-            rectangle.Size = Vector2.One;
+            rectangle.Size = new Vector2(2, 4);
         }
 
         public static void LoadContent(ContentManager content) {
@@ -45,7 +45,7 @@ namespace Kineckt {
                         _scene.Destroy(this);
                         for (var i = 0; i < 50; i++) {
                             _scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadowMap, _scene) {
-                                Position = Position
+                                Position = e.Position
                             });
                         }
                         _scene.Camera.Shake(.02f);
@@ -56,6 +56,7 @@ namespace Kineckt {
             if (Position.Z < -50) {
                 _scene.Destroy(this);
             }
+            Debug.WiredCube(Position, Rotation, new Vector3(rectangle.Size.X, 1f,rectangle.Size.Y), Color.Green);
         }
     }
 }
