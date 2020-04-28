@@ -14,6 +14,7 @@ namespace Kineckt {
         private static Model model;
         private static Texture texture;
         Vector2 vel = Vector2.Zero;
+        private readonly Scene _scene;
 
         private static readonly Vector3 MinPosition = new Vector3(-30, -200, -20);
         private static readonly Vector3 MaxPosition = new Vector3(30, 200, 30);
@@ -29,11 +30,12 @@ namespace Kineckt {
         private State _state = State.Left;
         private float _timer = 0;
 
-        public Enemy(GraphicsDevice graphicsDevice, RenderTarget2D shadow) : base("Enemy", graphicsDevice, shadow) {
+        public Enemy(GraphicsDevice graphicsDevice, RenderTarget2D shadow, Scene scene) : base("Enemy", graphicsDevice, shadow) {
             Texture = texture;
             Model = model;
             rectangle.Size = new Vector2(4, 4);
             Speed += 1f;
+            _scene = scene;
 
             if (Kineckt.Rnd.NextDouble() > .5) {
                 _state = State.Right;
@@ -47,6 +49,7 @@ namespace Kineckt {
 
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
+
             spawnTimer = Math.Max(spawnTimer, 0);
 
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
@@ -107,7 +110,31 @@ namespace Kineckt {
             _timer -= deltaTime;
 
             Debug.WiredCube(Position, Rotation, new Vector3(rectangle.Size.X, 2f, rectangle.Size.Y), Color.Red);
-        }
+
+            foreach (var gameObject in new List<GameObject>(_scene.GameObjects))
+            {
+                if (gameObject is Enemy e)
+                {
+                    if (e.Position.Z > 50)
+                    {
+                        _scene.Destroy(e);
+                    }
+                 }
+            }
+
+    //foreach (var gameObject in new List<GameObject>(_scene.GameObjects))
+    //{
+    //    if (gameObject is Enemy e)
+    //    {
+    //        if (e.Position.Y >= 50)
+    //        {
+    //            _scene.Destroy(e);
+    //        }
+    //    }
+    //}
+}
+
+
 
 
         public override void OnDie() {

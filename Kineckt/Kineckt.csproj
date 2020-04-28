@@ -48,6 +48,7 @@
     <Compile Include="src\Camera.cs" />
     <Compile Include="src\Debug.cs" />
     <Compile Include="src\EnemySpawner.cs" />
+    <Compile Include="src\EnemySuicide.cs" />
     <Compile Include="src\Extension.cs" />
     <Compile Include="src\Collision.cs" />
     <Compile Include="src\Enemy.cs" />
