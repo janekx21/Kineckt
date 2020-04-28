@@ -243,11 +243,89 @@
 /processorParam:DebugMode=Auto
 /build:shaders/Diffuse.fx
 
+#begin shaders/Diffuse.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Diffuse.fx
+
+#begin shaders/Diffuse.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Diffuse.fx
+
+#begin shaders/Diffuse.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Diffuse.fx
+
+#begin shaders/Post.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Post.fx
+
+#begin shaders/Post.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Post.fx
+
+#begin shaders/Post.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Post.fx
+
+#begin shaders/Post.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Post.fx
+
 #begin shaders/ShadowMapsGenerate.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:shaders/ShadowMapsGenerate.fx
+
+#begin shaders/ShadowMapsGenerate.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/ShadowMapsGenerate.fx
+
+#begin shaders/ShadowMapsGenerate.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/ShadowMapsGenerate.fx
+
+#begin shaders/ShadowMapsGenerate.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/ShadowMapsGenerate.fx
+
+#begin shaders/Unlit.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Unlit.fx
+
+#begin shaders/Unlit.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Unlit.fx
+
+#begin shaders/Unlit.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shaders/Unlit.fx
 
 #begin shaders/Unlit.fx
 /importer:EffectImporter

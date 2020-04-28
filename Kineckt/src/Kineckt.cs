@@ -25,6 +25,7 @@ namespace Kineckt {
         public static int score = 0;
         public static float energy = 100;
         private Debug _debug;
+        private Effect _postEffect;
 
         public Kineckt() {
             _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
@@ -59,6 +60,7 @@ namespace Kineckt {
             DefaultShadowMapEffect = Content.Load<Effect>("shaders/ShadowMapsGenerate");
 
             DefaultEffect = Content.Load<Effect>("shaders/Diffuse");
+            _postEffect = Content.Load<Effect>("shaders/Post");
 
             button = Content.Load<Texture2D>("images/green_button00");
             font = Content.Load<SpriteFont>("fonts/File");
@@ -136,11 +138,11 @@ namespace Kineckt {
             _debug.DrawDebug(_scene);
 
             GraphicsDevice.SetRenderTarget(null);
-            _spriteBatch.Begin(0, BlendState.AlphaBlend, SamplerState.AnisotropicClamp);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone, _postEffect);
+
             _spriteBatch.Draw(_mainBuffer,
                 new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
-            // _spriteBatch.Draw(_shadowMapRenderTarget, new Rectangle(0, 0, 200, 200), Color.White);
-
             _spriteBatch.Draw(button, buttonRectangle.Location.ToVector2());
             var size = font.MeasureString("Exit");
             _spriteBatch.DrawString(font, "Exit", buttonRectangle.Center.ToVector2() - size * .5f, Color.White);
@@ -154,6 +156,7 @@ namespace Kineckt {
             if (energy <= 0) {
                 text2 = $"Energy: ---";
             }
+
             var textSize2 = font.MeasureString(text2);
             _spriteBatch.DrawString(font, text2,
                 GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize2 - Vector2.One * 20 -
