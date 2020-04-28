@@ -111,6 +111,21 @@ namespace Kineckt {
                 }
             }
 
+            foreach (var gameObject in new List<GameObject>(Scene.GameObjects)) {
+                if (gameObject is EnemySuicide es) {
+                    if (Collision.Intersect(es, this)) {
+                        Scene.Destroy(this);
+                        for (var i = 0; i < 50; i++)
+                        {
+                            Scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadow, Scene) {
+                                Position = Position
+                            });
+                        }
+                        Scene.Camera.Shake(.02f);
+                    }
+                }
+            }
+
             Debug.WiredCube(Position, Rotation, new Vector3(rectangle.Size.X, 4f, rectangle.Size.Y),
                 Color.DarkGreen);
         }

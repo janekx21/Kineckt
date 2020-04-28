@@ -53,6 +53,22 @@ namespace Kineckt {
                 }
             }
 
+            foreach (var gameObject in new List<GameObject>(_scene.GameObjects)) {
+                if (gameObject is EnemySuicide es) {
+                    if (Collision.Intersect(es, this)) {
+                        _scene.Destroy(es);
+                        _scene.Destroy(this);
+                        for (var i = 0; i < 50; i++)
+                        {
+                            _scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadowMap, _scene) {
+                                Position = es.Position
+                            });
+                        }
+                        _scene.Camera.Shake(.02f);
+                    }
+                }
+            }
+
             if (Position.Z < -50) {
                 _scene.Destroy(this);
             }

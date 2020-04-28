@@ -74,7 +74,7 @@ float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
     float3 reflection = reflect(lookDirection, normal);
     float light = pow(max(dot(reflection, -lightDir), 0), 16);
     float diffuse = max(dot(-lightDir, normal), 0);
-    float ambient = .4;
+    float ambient = 0.4;
     
     float3 color = ((light + diffuse) * shadowColor + ambient) * alberto  * ao.rgb;
     
