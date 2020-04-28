@@ -7,7 +7,7 @@ namespace Kineckt {
         private readonly GraphicsDevice _graphicsDevice;
         private readonly RenderTarget2D _shadow;
         private readonly Scene _scene;
-        private float _timer = 0;
+        private float _timer = 4;
         private float _timer2 = 0;
         private float halt = 3;
         Random _rnd = new Random();

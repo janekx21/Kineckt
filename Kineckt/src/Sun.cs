@@ -14,5 +14,11 @@ namespace Kineckt {
 
             return lightView * lightProjection;
         }
+
+        public override void Update(GameTime gameTime) {
+            base.Update(gameTime);
+            Position = Vector3.Transform(Position,
+                Matrix.CreateFromAxisAngle(Vector3.Up, (float) gameTime.ElapsedGameTime.TotalSeconds* .1f) );
+        }
     }
 }

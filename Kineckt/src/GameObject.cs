@@ -7,7 +7,7 @@ namespace Kineckt {
         }
 
         public Rect rectangle { get; set; } = new Rect(new Vector2(0, 0), new Vector2(0, 0));
-
+        
         private Vector3 _position = Vector3.Zero;
         public Vector3 Position
         {

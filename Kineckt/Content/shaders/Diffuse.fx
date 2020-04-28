@@ -32,7 +32,6 @@ struct Diffuse_VSOut
     float3 Normal : NORMAL;
 };
 
-//  CREATE SHADOW MAP
 Diffuse_VSOut Diffuse_VertexShader(float4 Position : SV_POSITION, float2 UV : TEXCOORD0, float3 Normal : NORMAL)
 {
     Diffuse_VSOut Out;
@@ -78,13 +77,9 @@ float4 Diffuse_PixelShader(Diffuse_VSOut input) : COLOR
     
     float3 color = ((light + diffuse) * shadowColor + ambient) * alberto  * ao.rgb;
     
-    // color.rgb = lerp(color.rgb, normal, 0.99);
-    // color.rgb = lerp(color.rgb, reflection, 0.99999);
-    
     return float4(color, 1);
 }
 
-// Technique for creating the shadow map
 technique Diffuse
 {
     pass Pass1

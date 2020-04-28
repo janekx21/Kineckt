@@ -218,6 +218,25 @@
 /processorParam:TextureFormat=Compressed
 /build:models/starshipOmega.fbx
 
+#begin models/suicideEnemy.fbx
+/importer:FbxImporter
+/processor:ModelProcessor
+/processorParam:ColorKeyColor=0,0,0,0
+/processorParam:ColorKeyEnabled=True
+/processorParam:DefaultEffect=BasicEffect
+/processorParam:GenerateMipmaps=True
+/processorParam:GenerateTangentFrames=False
+/processorParam:PremultiplyTextureAlpha=True
+/processorParam:PremultiplyVertexColors=True
+/processorParam:ResizeTexturesToPowerOfTwo=False
+/processorParam:RotationX=0
+/processorParam:RotationY=0
+/processorParam:RotationZ=0
+/processorParam:Scale=1
+/processorParam:SwapWindingOrder=False
+/processorParam:TextureFormat=Compressed
+/build:models/suicideEnemy.fbx
+
 #begin models/wireframeCube.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -243,42 +262,6 @@
 /processorParam:DebugMode=Auto
 /build:shaders/Diffuse.fx
 
-#begin shaders/Diffuse.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Diffuse.fx
-
-#begin shaders/Diffuse.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Diffuse.fx
-
-#begin shaders/Diffuse.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Diffuse.fx
-
-#begin shaders/Post.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Post.fx
-
-#begin shaders/Post.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Post.fx
-
-#begin shaders/Post.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Post.fx
-
 #begin shaders/Post.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -290,42 +273,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:shaders/ShadowMapsGenerate.fx
-
-#begin shaders/ShadowMapsGenerate.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/ShadowMapsGenerate.fx
-
-#begin shaders/ShadowMapsGenerate.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/ShadowMapsGenerate.fx
-
-#begin shaders/ShadowMapsGenerate.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/ShadowMapsGenerate.fx
-
-#begin shaders/Unlit.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Unlit.fx
-
-#begin shaders/Unlit.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Unlit.fx
-
-#begin shaders/Unlit.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:shaders/Unlit.fx
 
 #begin shaders/Unlit.fx
 /importer:EffectImporter

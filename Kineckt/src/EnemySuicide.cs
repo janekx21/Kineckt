@@ -34,7 +34,7 @@ namespace Kineckt
 
         public static void LoadContent(ContentManager content)
         {
-            model = content.Load<Model>("models/baseEnemy");
+            model = content.Load<Model>("models/suicideEnemy");
             texture = content.Load<Texture2D>("images/collection");
         }
 
