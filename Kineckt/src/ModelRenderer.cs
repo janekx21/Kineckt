@@ -76,8 +76,7 @@ namespace Kineckt {
                             .SetValue(modelMatrix * scene.Sun.GetLightViewProjection());
 
                         Effect.Parameters["LightDirection"].SetValue(-scene.Sun.Position);
-                        Effect.Parameters["LookDirection"]
-                            .SetValue(Vector3.Transform(Vector3.Forward, scene.Camera.Rotation));
+                        Effect.Parameters["CameraPosition"].SetValue(scene.Camera.Position);
                     }
 
                     mesh.Draw();
