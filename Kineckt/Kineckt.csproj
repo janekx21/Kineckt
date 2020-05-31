@@ -43,9 +43,8 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Engine\Collision.cs" />
-    <Compile Include="src\Engine\GameObject.cs" />
-    <Compile Include="src\Engine\Scene.cs" />
+    <Compile Include="src\World\GameObject.cs" />
+    <Compile Include="src\World\Scene.cs" />
     <Compile Include="src\GameObjects\Bullet.cs" />
     <Compile Include="src\GameObjects\Camera.cs" />
     <Compile Include="src\GameObjects\Enemy.cs" />
@@ -58,6 +57,7 @@
     <Compile Include="src\Graphics\Debug.cs" />
     <Compile Include="src\Graphics\ModelRenderer.cs" />
     <Compile Include="src\Kineckt.cs" />
+    <Compile Include="src\Math\Collision.cs" />
     <Compile Include="src\Math\Extension.cs" />
     <Compile Include="src\Math\Rect.cs" />
   </ItemGroup>

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Kineckt.GameObjects;
 
-namespace Kineckt.Engine {
+namespace Kineckt.World {
     public class Scene {
         public Camera Camera { get; private set; }
         public Sun Sun { get; private set; }

@@ -1,7 +1,7 @@
 using Kineckt.Math;
 using Microsoft.Xna.Framework;
 
-namespace Kineckt.Engine {
+namespace Kineckt.World {
     public abstract class GameObject {
         private Vector3 _position = Vector3.Zero;
 

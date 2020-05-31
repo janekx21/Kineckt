@@ -1,8 +1,8 @@
 ﻿using Kineckt.Graphics;
-using Kineckt.Math;
+using Kineckt.World;
 using Microsoft.Xna.Framework;
 
-namespace Kineckt.Engine {
+namespace Kineckt.Math {
     public static class Collision {
         public static bool Intersect(GameObject a, GameObject b) {
             Debug.WiredCube(a.Position, Quaternion.Identity, new Vector3(a.Rectangle.Size.X, .01f, a.Rectangle.Size.Y),
