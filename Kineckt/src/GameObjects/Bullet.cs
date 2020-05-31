@@ -1,17 +1,18 @@
 using System.Collections.Generic;
-using System.Linq;
+using Kineckt.Engine;
+using Kineckt.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Kineckt {
+namespace Kineckt.GameObjects {
     public class Bullet : ModelRenderer {
-        private readonly GraphicsDevice _graphicsDevice;
-        private readonly RenderTarget2D _shadowMap;
-        private readonly Scene _scene;
+        private const float speed = 100;
         private static Model model;
         private static Texture texture;
-        private const float Speed = 100;
+        private readonly GraphicsDevice _graphicsDevice;
+        private readonly Scene _scene;
+        private readonly RenderTarget2D _shadowMap;
 
         public Bullet(GraphicsDevice graphicsDevice, RenderTarget2D shadowMap, Scene scene) :
             base("Bullet", graphicsDevice, shadowMap) {
@@ -20,7 +21,7 @@ namespace Kineckt {
             _scene = scene;
             Texture = texture;
             Model = model;
-            rectangle.Size = new Vector2(2, 4);
+            Rectangle.Size = new Vector2(2, 4);
         }
 
         public static void LoadContent(ContentManager content) {
@@ -32,47 +33,38 @@ namespace Kineckt {
             base.Update(gameTime);
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-            Position += Vector3.Forward * deltaTime * Speed;
+            Position += Vector3.Forward * deltaTime * speed;
             Rotation = Quaternion.CreateFromAxisAngle(Vector3.Forward, TimeAlive * 12);
 
-            rectangle.Position.X = Position.X;
-            rectangle.Position.Y = Position.Z;
+            Rectangle.Position.X = Position.X;
+            Rectangle.Position.Y = Position.Z;
 
-            foreach (var gameObject in new List<GameObject>(_scene.GameObjects)) {
-                if (gameObject is Enemy e) {
+            foreach (var gameObject in new List<GameObject>(_scene.GameObjects))
+                if (gameObject is Enemy e)
                     if (Collision.Intersect(e, this)) {
                         _scene.Destroy(e);
                         _scene.Destroy(this);
-                        for (var i = 0; i < 50; i++) {
+                        for (var i = 0; i < 50; i++)
                             _scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadowMap, _scene) {
                                 Position = e.Position
                             });
-                        }
                         _scene.Camera.Shake(.02f);
                     }
-                }
-            }
 
-            foreach (var gameObject in new List<GameObject>(_scene.GameObjects)) {
-                if (gameObject is EnemySuicide es) {
+            foreach (var gameObject in new List<GameObject>(_scene.GameObjects))
+                if (gameObject is EnemySuicide es)
                     if (Collision.Intersect(es, this)) {
                         _scene.Destroy(es);
                         _scene.Destroy(this);
                         for (var i = 0; i < 50; i++)
-                        {
                             _scene.Spawn(new Particle("Spawn Particle", _graphicsDevice, _shadowMap, _scene) {
                                 Position = es.Position
                             });
-                        }
                         _scene.Camera.Shake(.02f);
                     }
-                }
-            }
 
-            if (Position.Z < -50) {
-                _scene.Destroy(this);
-            }
-            Debug.WiredCube(Position, Rotation, new Vector3(rectangle.Size.X, 1f,rectangle.Size.Y), Color.Green);
+            if (Position.Z < -50) _scene.Destroy(this);
+            Debug.WiredCube(Position, Rotation, new Vector3(Rectangle.Size.X, 1f, Rectangle.Size.Y), Color.Green);
         }
     }
 }

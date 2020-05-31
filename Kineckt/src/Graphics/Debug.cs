@@ -1,34 +1,17 @@
 using System.Collections.Generic;
+using Kineckt.Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Kineckt {
+namespace Kineckt.Graphics {
     public class Debug {
-        struct Cube {
-            public Vector3 Pos, Scale;
-            public Quaternion Rot;
-            public Color Color;
-
-            public Cube(Vector3 pos, Quaternion rot, Vector3 scale, Color color) {
-                Scale = scale;
-                Rot = rot;
-                Pos = pos;
-                Color = color;
-            }
-        }
-
-        public class PlaceHolder : GameObject {
-            public PlaceHolder(){
-            }
-        }
-
-        private readonly GraphicsDevice _gd;
-
         private static Effect unlitEffect;
         private static Model wireframeCube;
 
         private static readonly List<Cube> CubeList = new List<Cube>();
+
+        private readonly GraphicsDevice _gd;
 
         public Debug(GraphicsDevice gd) {
             _gd = gd;
@@ -40,21 +23,19 @@ namespace Kineckt {
         }
 
         public void DrawDebug(Scene scene) {
-            foreach (var cube in CubeList) {
-                DrawWireframeCube(scene, cube.Pos, cube.Rot, cube.Scale, cube.Color);
-            }
+            foreach (var cube in CubeList) DrawWireframeCube(scene, cube.Pos, cube.Rot, cube.Scale, cube.Color);
 
             CubeList.Clear();
         }
 
         public static void WiredCube(Vector3 pos, Quaternion rot, Vector3 scale, Color color) {
-            #if DEBUG
+#if DEBUG
             CubeList.Add(new Cube(pos, rot, scale, color));
-            #endif
+#endif
         }
 
         private void DrawWireframeCube(Scene scene, Vector3 pos, Quaternion rot, Vector3 scale, Color color) {
-            if (wireframeCube != null) {
+            if (wireframeCube != null)
                 foreach (var mesh in wireframeCube.Meshes) {
                     foreach (var meshPart in mesh.MeshParts) {
                         var matrix = Matrix.CreateScale(scale)
@@ -80,7 +61,23 @@ namespace Kineckt {
 
                     mesh.Draw();
                 }
+        }
+
+        private struct Cube {
+            public readonly Vector3 Pos;
+            public readonly Vector3 Scale;
+            public readonly Quaternion Rot;
+            public readonly Color Color;
+
+            public Cube(Vector3 pos, Quaternion rot, Vector3 scale, Color color) {
+                Scale = scale;
+                Rot = rot;
+                Pos = pos;
+                Color = color;
             }
+        }
+
+        public class PlaceHolder : GameObject {
         }
     }
 }

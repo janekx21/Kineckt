@@ -1,8 +1,10 @@
 using System;
+using Kineckt.Engine;
+using Kineckt.Math;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Kineckt {
+namespace Kineckt.GameObjects {
     public class Camera : GameObject {
         private const float NearClipPlane = .1f;
 
@@ -10,11 +12,11 @@ namespace Kineckt {
 
         private readonly float _fieldOfView = MathHelper.ToRadians(80f);
         private readonly GraphicsDevice _graphicsDevice;
-        public Vector3 LookTarget = Vector3.Zero;
-
-        private Vector3 _shakeVelocity = Vector3.Zero;
 
         private readonly Random _rnd = new Random();
+
+        private Vector3 _shakeVelocity = Vector3.Zero;
+        public Vector3 LookTarget = Vector3.Zero;
 
         public Camera(GraphicsDevice graphicsDevice) : base("Camera") {
             _graphicsDevice = graphicsDevice;
@@ -25,7 +27,8 @@ namespace Kineckt {
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
             var speed = _shakeVelocity.Length() * 10;
-            _shakeVelocity = _shakeVelocity.MoveTowards(Vector3.Zero, (float) gameTime.ElapsedGameTime.TotalSeconds * speed);
+            _shakeVelocity =
+                _shakeVelocity.MoveTowards(Vector3.Zero, (float) gameTime.ElapsedGameTime.TotalSeconds * speed);
         }
 
         public Matrix GetViewMatrix() {

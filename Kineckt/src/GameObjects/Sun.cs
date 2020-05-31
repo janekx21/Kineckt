@@ -1,6 +1,7 @@
+using Kineckt.Engine;
 using Microsoft.Xna.Framework;
 
-namespace Kineckt {
+namespace Kineckt.GameObjects {
     public class Sun : GameObject {
         public Sun() : base("Sun") {
         }
@@ -18,7 +19,7 @@ namespace Kineckt {
         public override void Update(GameTime gameTime) {
             base.Update(gameTime);
             Position = Vector3.Transform(Position,
-                Matrix.CreateFromAxisAngle(Vector3.Up, (float) gameTime.ElapsedGameTime.TotalSeconds* .1f) );
+                Matrix.CreateFromAxisAngle(Vector3.Up, (float) gameTime.ElapsedGameTime.TotalSeconds * .1f));
         }
     }
 }

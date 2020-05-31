@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using Kineckt.GameObjects;
 
-namespace Kineckt {
+namespace Kineckt.Engine {
     public class Scene {
-        public Camera Camera { get; set; }
-        public Sun Sun { get; set; }
+        public Camera Camera { get; private set; }
+        public Sun Sun { get; private set; }
         public List<GameObject> GameObjects { get; } = new List<GameObject>();
 
 
@@ -28,9 +28,7 @@ namespace Kineckt {
         }
 
         public void Destroy(GameObject go) {
-            if (GameObjects.Remove(go)) {
-                go.OnDie();
-            }
+            if (GameObjects.Remove(go)) go.OnDie();
 
             switch (go) {
                 case Sun _:
@@ -40,6 +38,17 @@ namespace Kineckt {
                     Camera = null;
                     break;
             }
+        }
+
+        public T GetFirstOrNull<T>() where T : GameObject {
+            return GameObjects.Find(o => o is T) as T;
+        }
+
+        public void Reset() {
+            Sun = null;
+            Camera = null;
+
+            GameObjects.Clear();
         }
     }
 }

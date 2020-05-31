@@ -43,24 +43,23 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Bullet.cs" />
-    <Compile Include="src\Button.cs" />
-    <Compile Include="src\Camera.cs" />
-    <Compile Include="src\Debug.cs" />
-    <Compile Include="src\EnemySpawner.cs" />
-    <Compile Include="src\EnemySuicide.cs" />
-    <Compile Include="src\Extension.cs" />
-    <Compile Include="src\Collision.cs" />
-    <Compile Include="src\Enemy.cs" />
-    <Compile Include="src\GameObject.cs" />
+    <Compile Include="src\Engine\Collision.cs" />
+    <Compile Include="src\Engine\GameObject.cs" />
+    <Compile Include="src\Engine\Scene.cs" />
+    <Compile Include="src\GameObjects\Bullet.cs" />
+    <Compile Include="src\GameObjects\Camera.cs" />
+    <Compile Include="src\GameObjects\Enemy.cs" />
+    <Compile Include="src\GameObjects\EnemySpawner.cs" />
+    <Compile Include="src\GameObjects\EnemySuicide.cs" />
+    <Compile Include="src\GameObjects\Particle.cs" />
+    <Compile Include="src\GameObjects\Plane.cs" />
+    <Compile Include="src\GameObjects\Player.cs" />
+    <Compile Include="src\GameObjects\Sun.cs" />
+    <Compile Include="src\Graphics\Debug.cs" />
+    <Compile Include="src\Graphics\ModelRenderer.cs" />
     <Compile Include="src\Kineckt.cs" />
-    <Compile Include="src\ModelRenderer.cs" />
-    <Compile Include="src\Particle.cs" />
-    <Compile Include="src\Plane.cs" />
-    <Compile Include="src\Player.cs" />
-    <Compile Include="src\Rect.cs" />
-    <Compile Include="src\Scene.cs" />
-    <Compile Include="src\Sun.cs" />
+    <Compile Include="src\Math\Extension.cs" />
+    <Compile Include="src\Math\Rect.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

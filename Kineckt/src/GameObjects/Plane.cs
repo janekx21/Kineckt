@@ -1,9 +1,9 @@
-using System.Linq;
+using Kineckt.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Kineckt {
+namespace Kineckt.GameObjects {
     public class Plane : ModelRenderer {
         private static Model model;
         private static Texture texture;
@@ -24,9 +24,7 @@ namespace Kineckt {
             var deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             Position += Vector3.Backward * deltaTime * 100;
-            if (Position.Z < -7000) {
-                Position = Vector3.Zero;
-            }
+            if (Position.Z < -7000) Position = Vector3.Zero;
         }
     }
 }

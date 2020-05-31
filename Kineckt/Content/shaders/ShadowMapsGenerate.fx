@@ -1,3 +1,6 @@
+// This shader generates the shadow map
+// @author Janek Winkler
+
 matrix LightViewProj;
 
 struct CreateShadowMap_VSOut

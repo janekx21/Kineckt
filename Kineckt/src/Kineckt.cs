@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Kineckt.Engine;
+using Kineckt.GameObjects;
+using Kineckt.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Plane = Kineckt.GameObjects.Plane;
 
 namespace Kineckt {
     public class Kineckt : Game {
-        private readonly GraphicsDeviceManager _graphics;
-
+        public static readonly Random Rnd = new Random(Environment.TickCount);
+        private Texture2D _button;
+        private Rectangle _buttonRectangle;
+        private Rectangle _button2Rectangle;
+        private Debug _debug;
         private DepthStencilState _depth;
+        private SpriteFont _font;
         private RenderTarget2D _mainBuffer;
+        private Effect _postEffect;
 
         private Scene _scene;
 
         private RenderTarget2D _shadowMapRenderTarget;
         private SpriteBatch _spriteBatch;
-        public static readonly Random Rnd = new Random(Environment.TickCount);
-        private Texture2D button;
-        private Rectangle buttonRectangle;
-        private SpriteFont font;
-
-        public static int score = 0;
-        public static float energy = 100;
-        private Debug _debug;
-        private Effect _postEffect;
 
         public Kineckt() {
-            _graphics = new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
+            new GraphicsDeviceManager(this) {GraphicsProfile = GraphicsProfile.HiDef};
             Content.RootDirectory = "Content";
         }
 
@@ -46,8 +46,13 @@ namespace Kineckt {
                 _mainBuffer = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
                     GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color,
                     DepthFormat.Depth24Stencil8, 0, RenderTargetUsage.DiscardContents);
-                buttonRectangle = new Rectangle(20, GraphicsDevice.Viewport.Height - 20 - button.Height, button.Width,
-                    button.Height);
+                _buttonRectangle = new Rectangle(20, GraphicsDevice.Viewport.Height - 20 - _button.Height,
+                    _button.Width,
+                    _button.Height);
+                
+                _button2Rectangle = new Rectangle(20 + _buttonRectangle.Width + 20, GraphicsDevice.Viewport.Height - 20 - _button.Height,
+                    _button.Width,
+                    _button.Height);
             };
 
             _scene = new Scene();
@@ -62,11 +67,14 @@ namespace Kineckt {
             DefaultEffect = Content.Load<Effect>("shaders/Diffuse");
             _postEffect = Content.Load<Effect>("shaders/Post");
 
-            button = Content.Load<Texture2D>("images/green_button00");
-            font = Content.Load<SpriteFont>("fonts/File");
-            buttonRectangle = new Rectangle(20, GraphicsDevice.Viewport.Height - 20 - button.Height, button.Width,
-                button.Height);
+            _button = Content.Load<Texture2D>("images/green_button00");
+            _font = Content.Load<SpriteFont>("fonts/File");
+            
+            _buttonRectangle = new Rectangle(20, GraphicsDevice.Viewport.Height - 20 - _button.Height, _button.Width,
+                _button.Height);
 
+            _button2Rectangle = new Rectangle(20 + _buttonRectangle.Width + 20, GraphicsDevice.Viewport.Height - 20 - _button.Height, _button.Width,
+                _button.Height);
 
             // load content via reflection
             var subclassTypes = Assembly.GetExecutingAssembly().GetTypes();
@@ -88,6 +96,13 @@ namespace Kineckt {
 
         protected override void BeginRun() {
             base.BeginRun();
+
+            ResetGame();
+            _debug = new Debug(GraphicsDevice);
+        }
+
+        void ResetGame() {
+            _scene.Reset();
             _scene.Spawn(new Sun {
                 Position = new Vector3(200, 200, -50)
             });
@@ -100,8 +115,6 @@ namespace Kineckt {
             _scene.Spawn(new EnemySpawner(GraphicsDevice, _shadowMapRenderTarget, _scene) {
                 Position = new Vector3(0, 0, -20f)
             });
-
-            _debug = new Debug(GraphicsDevice);
         }
 
         protected override void Update(GameTime gameTime) {
@@ -110,20 +123,21 @@ namespace Kineckt {
                 Exit();
 
             if (_scene.GameObjects.Find(o => o is Player) == null) {
-                float dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
+                var dt = (float) gameTime.ElapsedGameTime.TotalSeconds;
                 dt *= .3f;
                 gameTime.ElapsedGameTime = TimeSpan.FromSeconds(dt);
             }
-
-
-            energy = (float) Math.Min(energy + gameTime.ElapsedGameTime.TotalSeconds * 50, 100);
 
             foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Update(gameTime);
 
             var state = Mouse.GetState();
             if (state.LeftButton == ButtonState.Pressed) {
-                if (buttonRectangle.Contains(state.Position)) {
+                if (_buttonRectangle.Contains(state.Position)) {
                     Exit();
+                }
+
+                if (_button2Rectangle.Contains(state.Position)) {
+                    ResetGame();
                 }
             }
 
@@ -135,34 +149,7 @@ namespace Kineckt {
 
             DrawModels(gameTime);
 
-            _debug.DrawDebug(_scene);
-
-            GraphicsDevice.SetRenderTarget(null);
-            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
-                DepthStencilState.None, RasterizerState.CullNone, _postEffect);
-
-            _spriteBatch.Draw(_mainBuffer,
-                new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
-            _spriteBatch.Draw(button, buttonRectangle.Location.ToVector2());
-            var size = font.MeasureString("Exit");
-            _spriteBatch.DrawString(font, "Exit", buttonRectangle.Center.ToVector2() - size * .5f, Color.White);
-
-            var text = $"Score: {score}";
-            var textSize = font.MeasureString(text);
-            _spriteBatch.DrawString(font, text,
-                GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize - Vector2.One * 20, Color.White);
-
-            var text2 = $"Energy: {energy:000}";
-            if (energy <= 0) {
-                text2 = $"Energy: ---";
-            }
-
-            var textSize2 = font.MeasureString(text2);
-            _spriteBatch.DrawString(font, text2,
-                GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize2 - Vector2.One * 20 -
-                Vector2.UnitY * textSize.Y, Color.White);
-
-            _spriteBatch.End();
+            DrawUi(gameTime);
 
             base.Draw(gameTime);
         }
@@ -182,7 +169,7 @@ namespace Kineckt {
 
         private void DrawShadows(GameTime gameTime) {
             GraphicsDevice.SetRenderTarget(_shadowMapRenderTarget);
-            GraphicsDevice.Clear(Color.Red);
+            GraphicsDevice.Clear(Color.Black);
             GraphicsDevice.DepthStencilState = _depth;
             GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
@@ -191,11 +178,59 @@ namespace Kineckt {
 
         private void DrawModels(GameTime gameTime) {
             GraphicsDevice.SetRenderTarget(_mainBuffer);
-            GraphicsDevice.Clear(Color.Aqua);
+            GraphicsDevice.Clear(Color.Black); // you can see this color while resetting
             GraphicsDevice.DepthStencilState = _depth;
             GraphicsDevice.RasterizerState = new RasterizerState {CullMode = CullMode.CullCounterClockwiseFace};
 
             foreach (var go in new List<GameObject>(_scene.GameObjects)) go.Draw(_scene);
+            _debug.DrawDebug(_scene);
+        }
+
+        private void DrawUi(GameTime gameTime) {
+            GraphicsDevice.SetRenderTarget(null);
+
+            // Draw main buffer back to screen
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone, _postEffect);
+            _spriteBatch.Draw(_mainBuffer,
+                new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height), Color.White);
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp,
+                DepthStencilState.None, RasterizerState.CullNone);
+
+
+            { // draw exit button
+                _spriteBatch.Draw(_button, _buttonRectangle.Location.ToVector2());
+                var size = _font.MeasureString("Exit");
+                _spriteBatch.DrawString(_font, "Exit", _buttonRectangle.Center.ToVector2() - size * .5f, Color.White);
+            }
+
+            { // draw reset button
+                const string text = "Reset";
+                _spriteBatch.Draw(_button, _button2Rectangle.Location.ToVector2());
+                var size = _font.MeasureString(text);
+                _spriteBatch.DrawString(_font, text, _button2Rectangle.Center.ToVector2() - size * .5f, Color.White);
+            }
+
+            var player = _scene.GetFirstOrNull<Player>();
+            if (player != null) {
+                var text = $"Score: {player.Score}";
+                var textSize = _font.MeasureString(text);
+                _spriteBatch.DrawString(_font, text,
+                    GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize - Vector2.One * 20, Color.White);
+
+                var energy = player.Energy;
+                var text2 = $"Energy: {energy:000}";
+                if (energy <= 0) text2 = "Energy: empty";
+
+                var textSize2 = _font.MeasureString(text2);
+                _spriteBatch.DrawString(_font, text2,
+                    GraphicsDevice.Viewport.Bounds.Size.ToVector2() - textSize2 - Vector2.One * 20 -
+                    Vector2.UnitY * textSize.Y, Color.White);
+            }
+
+            _spriteBatch.End();
         }
     }
 }

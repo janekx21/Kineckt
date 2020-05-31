@@ -1,4 +1,6 @@
-// You can only upload uniforms that you also use in code
+// This is a unlit shader
+// it will render the Color strait to the frame buffer
+// @author Janek Winkler
 
 matrix World;
 matrix View;
